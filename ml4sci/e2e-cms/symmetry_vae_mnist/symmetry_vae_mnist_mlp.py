@@ -34,6 +34,7 @@ Improvements v1:
 - Integrated logging and more type hints.
 """
 import os
+import sys
 import argparse
 import numpy as np
 import torch
@@ -52,8 +53,12 @@ from sklearn.decomposition import PCA
 import math
 from typing import List, Tuple, Optional, Dict, Any, Union, Callable
 from torch import Tensor
-import logging
+import logging as lg
 import time # For timestamping plots
+
+# Setup basic logging
+lg.basicConfig(level=lg.INFO, stream=sys.stdout, format='%(asctime)s - %(levelname)s - %(message)s')
+logging = lg.getLogger("main")
 
 # --- EMLP / JAX Integration ---
 EMLP_AVAILABLE = False
@@ -74,10 +79,6 @@ except ImportError:
 except Exception as e:
     logging.error(f"Error importing EMLP/JAX: {e}. Bonus Task 5 will be skipped.")
 
-
-# Setup basic logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-
 # --- Configuration ---
 def parse_args():
     parser = argparse.ArgumentParser(description="VAE Symmetry Discovery on Rotated MNIST")
@@ -86,7 +87,7 @@ def parse_args():
     parser.add_argument('--epochs_vae', type=int, default=50, help='Max Epochs for VAE training')
     parser.add_argument('--epochs_transform_mlp', type=int, default=25, help='Max Epochs for Supervised Transform MLP training')
     parser.add_argument('--epochs_oracle', type=int, default=15, help='Max Epochs for Oracle Classifier training')
-    parser.add_argument('--epochs_unsup', type=int, default=75, help='Max Epochs for Unsupervised Symmetry Discovery')
+    parser.add_argument('--epochs_unsup', type=int, default=30, help='Max Epochs for Unsupervised Symmetry Discovery')
     parser.add_argument('--epochs_invariant_cls', type=int, default=30, help='Max Epochs for Invariant Classifier training')
     # Hyperparameters
     parser.add_argument('--batch_size', type=int, default=128, help='Batch size for training')
